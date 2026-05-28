@@ -18,7 +18,7 @@
   <div id="root"></div>
   
   <script type="text/babel">
-    const { useState, useRef, useCallback, useEffect } = React;
+    const { useState, useRef, useCallback } = React;
     const { motion, useMotionValue, useSpring, useTransform } = Motion;
 
     const boardMembers = [
@@ -34,13 +34,13 @@
       { name: "Pooja Priyadarshini", role: "HR Head" },
     ];
 
-    function IEEEEMBSLogo({ className }) {
+    function IEEEEMBSLogo({ className, style }) {
       return (
         <img 
-          src="https://www.embs.org/wp-content/uploads/2024/06/ieee-embs-tag-tm-ko-logo2x.png" 
+          src="assets/embs-logo-transparent.png" 
           alt="IEEE EMBS Logo"
           className={className}
-          style={{ objectFit: 'contain', aspectRatio: 'auto' }}
+          style={{ objectFit: 'contain', objectPosition: 'center', aspectRatio: 'auto', ...style }}
         />
       );
     }
@@ -48,8 +48,15 @@
     function Avatar({ name, className }) {
       const initials = name.split(" ").map(n => n[0]).join("");
       return (
-        <div className={`${className} rounded-full bg-neutral-900 border-2 border-neutral-700 flex items-center justify-center`}>
-          <span className="text-white font-mono text-sm">{initials}</span>
+        <div
+          className={`${className} rounded-full flex items-center justify-center`}
+          style={{
+            background: "linear-gradient(145deg, #050505 0%, #10171a 55%, #160812 100%)",
+            border: "2px solid rgba(69, 190, 214, 0.65)",
+            boxShadow: "0 0 22px rgba(216, 88, 151, 0.28)",
+          }}
+        >
+          <span className="font-mono text-sm" style={{ color: "#45bed6" }}>{initials}</span>
         </div>
       );
     }
@@ -60,12 +67,10 @@
       const [isFlipped, setIsFlipped] = useState(false);
       const audioContextRef = useRef(null);
 
-      useEffect(() => {
-        audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
-        return () => audioContextRef.current?.close();
-      }, []);
-
       const playFlipSound = useCallback(() => {
+        if (!audioContextRef.current) {
+          audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+        }
         const ctx = audioContextRef.current;
         if (!ctx) return;
         if (ctx.state === "suspended") ctx.resume();
@@ -133,7 +138,7 @@
 
       const handleClick = () => {
         playFlipSound();
-        setIsFlipped(!isFlipped);
+        setIsFlipped((current) => !current);
         mouseX.set(0);
         mouseY.set(0);
       };
@@ -147,20 +152,20 @@
             onMouseLeave={handleMouseLeave}
             onClick={handleClick}
             animate={{
-              rotateY: isFlipped ? 180 : 0,
               scale: isFlipped ? [1, 1.05, 1] : 1,
             }}
             style={{
-              rotateX: rotateX,
+              rotateX: isFlipped ? 0 : rotateX,
               rotateY: isFlipped ? 180 : rotateY,
               transformStyle: "preserve-3d",
+              width: "min(440px, calc(100vw - 48px))",
+              height: "272px",
             }}
             transition={{
               rotateY: { duration: 0.8, ease: [0.4, 0, 0.2, 1] },
               scale: { duration: 0.8, ease: [0.4, 0, 0.2, 1], times: [0, 0.5, 1] },
             }}
             className="relative cursor-pointer"
-            style={{ width: "420px", height: "260px", transformStyle: "preserve-3d" }}
           >
             <motion.div
               className="absolute inset-0 rounded-2xl overflow-hidden"
@@ -174,7 +179,7 @@
               <div
                 className="absolute inset-0"
                 style={{
-                  background: "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 25%, #0f0f0f 50%, #1f1f1f 75%, #0a0a0a 100%)",
+                  background: "linear-gradient(135deg, #020404 0%, #06171c 28%, #050506 52%, #190817 74%, #020404 100%)",
                 }}
               />
 
@@ -190,9 +195,9 @@
                 }}
                 style={{
                   background: `
-                    radial-gradient(ellipse 80% 50% at 20% 30%, rgba(255,255,255,0.08) 0%, transparent 50%),
-                    radial-gradient(ellipse 60% 40% at 80% 70%, rgba(255,255,255,0.06) 0%, transparent 50%),
-                    radial-gradient(ellipse 100% 60% at 50% 50%, rgba(255,255,255,0.04) 0%, transparent 60%)
+                    radial-gradient(ellipse 80% 50% at 20% 30%, rgba(69,190,214,0.18) 0%, transparent 52%),
+                    radial-gradient(ellipse 60% 40% at 80% 70%, rgba(216,88,151,0.2) 0%, transparent 52%),
+                    radial-gradient(ellipse 100% 60% at 50% 50%, rgba(255,255,255,0.035) 0%, transparent 60%)
                   `,
                   backgroundSize: "200% 200%",
                 }}
@@ -203,11 +208,11 @@
                 animate={{
                   background: isHovered
                     ? [
-                        "linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%)",
-                        "linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.2) 55%, transparent 75%)",
-                        "linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%)",
+                        "linear-gradient(45deg, transparent 30%, rgba(69,190,214,0.2) 50%, transparent 70%)",
+                        "linear-gradient(45deg, transparent 40%, rgba(216,88,151,0.24) 55%, transparent 75%)",
+                        "linear-gradient(45deg, transparent 30%, rgba(69,190,214,0.2) 50%, transparent 70%)",
                       ]
-                    : "linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%)",
+                    : "linear-gradient(45deg, transparent 30%, rgba(69,190,214,0.12) 50%, transparent 70%)",
                 }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               />
@@ -220,11 +225,11 @@
                   background: `
                     conic-gradient(from 0deg at 30% 30%, 
                       transparent 0deg, 
-                      rgba(255,255,255,0.1) 60deg, 
+                      rgba(69,190,214,0.18) 60deg, 
                       transparent 120deg,
-                      rgba(255,255,255,0.05) 180deg,
+                      rgba(216,88,151,0.14) 180deg,
                       transparent 240deg,
-                      rgba(255,255,255,0.08) 300deg,
+                      rgba(69,190,214,0.14) 300deg,
                       transparent 360deg
                     )
                   `,
@@ -234,7 +239,6 @@
               <motion.div className="absolute inset-0 overflow-hidden rounded-2xl">
                 <motion.div
                   className="absolute h-full"
-                  style={{ width: "300%" }}
                   animate={{ x: ["-200%", "100%"] }}
                   transition={{
                     duration: 5,
@@ -243,7 +247,7 @@
                     repeatDelay: 2,
                   }}
                   style={{
-                    background: "linear-gradient(90deg, transparent 0%, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%, transparent 100%)",
+                    background: "linear-gradient(90deg, transparent 0%, transparent 40%, rgba(69,190,214,0.16) 48%, rgba(216,88,151,0.12) 54%, transparent 62%, transparent 100%)",
                     transform: "skewX(-25deg)",
                     width: "300%",
                   }}
@@ -254,40 +258,39 @@
                 className="absolute rounded-2xl"
                 style={{
                   inset: "1px",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  boxShadow: "inset 0 1px 1px rgba(255,255,255,0.1), inset 0 -1px 1px rgba(0,0,0,0.3)",
+                  border: "1px solid rgba(69,190,214,0.25)",
+                  boxShadow: "inset 0 1px 1px rgba(69,190,214,0.22), inset 0 -1px 1px rgba(216,88,151,0.16), 0 18px 46px rgba(216,88,151,0.12)",
                 }}
               />
 
-              <div className="relative h-full p-8 flex flex-col justify-between" style={{ transform: "translateZ(30px)" }}>
-                <div className="flex items-center justify-between">
+              <div className="relative h-full p-8 flex flex-col justify-between gap-5" style={{ transform: "translateZ(30px)" }}>
+                <div className="grid items-center gap-6" style={{ gridTemplateColumns: "112px minmax(0, 1fr)", minHeight: "150px" }}>
                   <div className="relative">
                     <motion.div
                       className="absolute rounded-full"
-                      style={{ inset: "-3px" }}
                       animate={{ opacity: isHovered ? [0.4, 0.8, 0.4] : 0.4 }}
                       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                       style={{
-                        background: "linear-gradient(135deg, #fff 0%, #833 50%, #fff 100%)",
+                        background: "linear-gradient(135deg, #45bed6 0%, #d85897 55%, #45bed6 100%)",
                         inset: "-3px",
                         borderRadius: "9999px",
                       }}
                     />
-                    <Avatar name={name} className="relative w-16 h-16" />
+                    <Avatar name={name} className="relative w-28 h-28" />
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="min-w-0">
                     <div className="space-y-2 text-right">
                       <motion.h2
-                        className="text-2xl font-light tracking-wide text-white"
-                        style={{ textShadow: "0 2px 10px rgba(255,255,255,0.1)" }}
+                        className="text-xl sm:text-2xl font-light tracking-wide text-white leading-tight break-words"
+                        style={{ textShadow: "0 2px 12px rgba(69,190,214,0.24)" }}
                       >
                         {name}
                       </motion.h2>
                       <p
                         className="text-xs tracking-widest uppercase"
                         style={{
-                          background: "linear-gradient(90deg, #888 0%, #fff 50%, #888 100%)",
+                          background: "linear-gradient(90deg, #45bed6 0%, #f0c4da 50%, #d85897 100%)",
                           WebkitBackgroundClip: "text",
                           WebkitTextFillColor: "transparent",
                         }}
@@ -305,7 +308,7 @@
                     animate={{ opacity: isHovered ? 1 : 0.7 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <IEEEEMBSLogo className="h-10" style={{ maxWidth: "120px" }} />
+                    <IEEEEMBSLogo className="h-12" style={{ width: "145px", borderRadius: "6px" }} />
                   </motion.div>
                 </div>
               </div>
@@ -317,7 +320,7 @@
                 animate={{ opacity: isHovered ? 0.5 : 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <span className="text-neutral-500 uppercase" style={{ fontSize: "9px", fontFamily: "monospace", letterSpacing: "0.1em" }}>
+                <span className="uppercase" style={{ color: "#45bed6", fontSize: "9px", fontFamily: "monospace", letterSpacing: "0.1em" }}>
                   Click to flip
                 </span>
               </motion.div>
@@ -338,7 +341,7 @@
               <div
                 className="absolute inset-0"
                 style={{
-                  background: "linear-gradient(225deg, #0f0f0f 0%, #1a1a1a 30%, #0a0a0a 60%, #151515 100%)",
+                  background: "linear-gradient(225deg, #06171c 0%, #120713 34%, #020404 62%, #0b1d22 100%)",
                 }}
               />
 
@@ -348,8 +351,8 @@
                 transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
                 style={{
                   background: `
-                    radial-gradient(ellipse 60% 40% at 70% 40%, rgba(255,255,255,0.06) 0%, transparent 50%),
-                    radial-gradient(ellipse 80% 60% at 30% 60%, rgba(255,255,255,0.04) 0%, transparent 50%)
+                    radial-gradient(ellipse 60% 40% at 70% 40%, rgba(216,88,151,0.18) 0%, transparent 50%),
+                    radial-gradient(ellipse 80% 60% at 30% 60%, rgba(69,190,214,0.16) 0%, transparent 50%)
                   `,
                   backgroundSize: "200% 200%",
                 }}
@@ -359,56 +362,47 @@
                 className="absolute rounded-2xl"
                 style={{
                   inset: "1px",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  boxShadow: "inset 0 1px 1px rgba(255,255,255,0.1), inset 0 -1px 1px rgba(0,0,0,0.3)",
+                  border: "1px solid rgba(216,88,151,0.28)",
+                  boxShadow: "inset 0 1px 1px rgba(216,88,151,0.2), inset 0 -1px 1px rgba(69,190,214,0.16)",
                 }}
               />
 
               <div className="relative h-full p-8 flex flex-col justify-between">
-                <div className="flex items-center justify-between">
-                  <IEEEEMBSLogo className="h-6 opacity-50" style={{ maxWidth: "80px" }} />
-                  <span className="text-neutral-600 uppercase" style={{ fontSize: "9px", fontFamily: "monospace", letterSpacing: "0.3em" }}>
+                <div className="flex items-center justify-between gap-4">
+                  <IEEEEMBSLogo className="h-8 opacity-80" style={{ width: "96px", borderRadius: "4px" }} />
+                  <span className="uppercase" style={{ color: "#d85897", fontSize: "11px", fontFamily: "monospace", letterSpacing: "0.22em" }}>
                     IEEE EMBS BOARD
                   </span>
                 </div>
 
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <h3 className="text-neutral-500 uppercase" style={{ fontSize: "10px", fontFamily: "monospace", letterSpacing: "0.2em" }}>
-                      About
-                    </h3>
-                    <p className="text-sm text-neutral-400 leading-relaxed">
-                      Building the future of biomedical engineering. Dedicated to advancing healthcare technology and innovation.
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <h3 className="text-2xl font-light leading-tight text-white">{name}</h3>
+                    <p
+                      className="text-xs tracking-widest uppercase"
+                      style={{
+                        background: "linear-gradient(90deg, #45bed6 0%, #f0c4da 50%, #d85897 100%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                      }}
+                    >
+                      {role}
                     </p>
                   </div>
 
                   <div className="space-y-2">
-                    <h3 className="text-neutral-500 uppercase" style={{ fontSize: "10px", fontFamily: "monospace", letterSpacing: "0.2em" }}>
-                      Focus Areas
+                    <h3 className="uppercase" style={{ color: "#45bed6", fontSize: "10px", fontFamily: "monospace", letterSpacing: "0.2em" }}>
+                      About
                     </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {["BioMed", "Healthcare", "Innovation", "Research"].map((skill) => (
-                        <span
-                          key={skill}
-                          className="px-3 py-1 text-neutral-300 rounded-full"
-                          style={{
-                            fontSize: "10px",
-                            fontFamily: "monospace",
-                            letterSpacing: "0.05em",
-                            background: "rgba(255,255,255,0.05)",
-                            border: "1px solid rgba(255,255,255,0.1)",
-                          }}
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
+                    <p className="text-sm leading-relaxed" style={{ color: "#c9dce1" }}>
+                      A dedicated member of the IEEE EMBS board, contributing to the chapter's work in biomedical engineering, healthcare technology, research, and student-led innovation.
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between">
                   <span></span>
-                  <span className="text-neutral-600" style={{ fontSize: "9px", fontFamily: "monospace", letterSpacing: "0.05em" }}>
+                  <span style={{ color: "#45bed6", fontSize: "9px", fontFamily: "monospace", letterSpacing: "0.05em" }}>
                     2025-26
                   </span>
                 </div>
@@ -419,7 +413,7 @@
                   initial={{ opacity: 0.5 }}
                   animate={{ opacity: 0.5 }}
                 >
-                  <span className="text-neutral-500 uppercase" style={{ fontSize: "9px", fontFamily: "monospace", letterSpacing: "0.1em" }}>
+                  <span className="uppercase" style={{ color: "#d85897", fontSize: "9px", fontFamily: "monospace", letterSpacing: "0.1em" }}>
                     Click to flip back
                   </span>
                 </motion.div>
@@ -436,17 +430,17 @@
           <div
             className="fixed inset-0 opacity-20 pointer-events-none"
             style={{
-              background: "radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 70%)",
+              background: "radial-gradient(ellipse at 42% 36%, rgba(69, 190, 214, 0.12) 0%, transparent 48%), radial-gradient(ellipse at 68% 72%, rgba(216, 88, 151, 0.12) 0%, transparent 52%)",
             }}
           />
 
           <div className="relative z-10 text-center mb-16">
-            <h1 className="text-4xl font-light tracking-wide text-white mb-2">IEEE EMBS</h1>
+            <h1 className="text-4xl font-light tracking-wide text-white mb-2" style={{ textShadow: "0 0 24px rgba(69,190,214,0.28)" }}>IEEE EMBS</h1>
             <p
               className="text-sm uppercase"
               style={{
                 letterSpacing: "0.3em",
-                background: "linear-gradient(90deg, #888 0%, #fff 50%, #888 100%)",
+                background: "linear-gradient(90deg, #45bed6 0%, #f0c4da 45%, #d85897 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
@@ -458,8 +452,8 @@
           <div
             className="relative z-10 grid gap-12 mx-auto justify-items-center"
             style={{
-              gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))",
-              maxWidth: "920px",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 440px), 1fr))",
+              maxWidth: "960px",
             }}
           >
             {boardMembers.map((member, index) => (
@@ -475,5 +469,3 @@
   </script>
 </body>
 </html>
-
-```
