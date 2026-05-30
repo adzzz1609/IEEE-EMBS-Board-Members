@@ -22,16 +22,66 @@
     const { motion, useMotionValue, useSpring, useTransform } = Motion;
 
     const boardMembers = [
-      { name: "Ishita Mohanta", role: "Chairperson" },
-      { name: "Bhadra Sanjay Namboodiry", role: "Vice-Chairperson" },
-      { name: "Tanisha Choudhuri", role: "Secretary" },
-      { name: "S Hashmitha", role: "Co-Secretary" },
-      { name: "A Nethraa", role: "Finance Head" },
-      { name: "P Daphne Christina Ruby", role: "Research Head" },
-      { name: "Prithiksha Suresh Kumar", role: "Design Head" },
-      { name: "Haripriya Muni", role: "Public Relations Head" },
-      { name: "Aryabrata Pattnaik", role: "Editorial Head" },
-      { name: "Pooja Priyadarshini", role: "HR Head" },
+      {
+        name: "Ishita Mohanta",
+        role: "Chairperson",
+        image: "assets/ishita-mohanta-no-lettering.png",
+        about: "Smart, kind, and full of energy, Ishita is someone who truly lights up the room. Always open to conversations and new connections, she makes everyone feel heard and welcome.\nHer dedication, hard work, and passion for IEEE EMBS shows in everything she does.\nHumble, thoughtful, and endlessly bubbly, she leads with both heart and purpose.",
+      },
+      {
+        name: "Bhadra Sanjay Namboodiry",
+        role: "Vice-Chairperson",
+        image: "assets/bhadra-sanjay-namboodiry-no-lettering.png",
+        about: "With her clear and focused mind, she is ready to lead the chapter to even newer heights.\n\nWhile she posseses a calm demeanor, she is also quietly observant. When push comes to shove, she knows how to get everyone and everything back on track.",
+      },
+      {
+        name: "Tanisha Choudhuri",
+        role: "Secretary",
+        image: "assets/tanisha-chaudhari-no-lettering.png",
+        about: "A leader who takes charge of maintaining the chapter while bringing fun, energy, and personality along the way.\n\nIntelligent, graceful, with a pinch of sass, our Secretary is the perfect fit to lead, inspire, and evolve our chapter into something even greater.",
+      },
+      {
+        name: "S Hashmitha",
+        role: "Co-Secretary",
+        image: "assets/hashmita-no-lettering.png",
+        about: "Our adorable/extremely kind/patient/always-there-for-everyone and amiable ball of sunshine! If you need a lending hand or if you're feeling left out in a group, she'll be the first one to instantly make you feel welcomed. You can trust her to make sure things run smoothly no matter how hectic it could get.",
+      },
+      {
+        name: "A Nethraa",
+        role: "Finance Head",
+        image: "assets/nethraa-no-lettering.png",
+        about: "Numbers and strategy, she runs the show,\nTraditional Tamil grace in the flow.\nFinance head with unmatched flair,\nFocused on accounts, phone? Barely there.",
+      },
+      {
+        name: "P Daphne Christina Ruby",
+        role: "Research Head",
+        image: "assets/daphne-no-lettering.png",
+        about: "Collaborative, free spirited and full of quiet confidence. The driving force behind our technical prowess and expertise in biomedical science. She is dedicated to spearheading innovative projects and exploring new avenues.",
+      },
+      {
+        name: "Prithiksha Suresh Kumar",
+        role: "Design Head",
+        image: "assets/pritiksha-no-lettering.png",
+        about: "Fun at heart, sharp in vision. A beautiful blend of creativity with discipline. She might be easy to work with, however, she is uncompromising when it comes to quality. A mentor who pushes you to do better and design smarter.",
+      },
+      {
+        name: "Haripriya Muni",
+        role: "Public Relations Head",
+        image: "assets/haripriya-no-lettering.png",
+        about: "Jovial, fun-loving, and always ready to strike up a conversation, she's basically a people magnet. When it comes to ideas, her brain runs like a full-speed fire engine, constantly beaming with creative sparks. Super friendly, always helpful when you need her, and incredibly approachable, she puts in her best effort to make sure our events reach everyone, effortlessly turning ideas into buzz wherever she goes.",
+      },
+      {
+        name: "Aryabrata Pattnaik",
+        role: "Editorial Head",
+        image: "assets/aryabrata-no-lettering.png",
+        about: "A powerhouse of ideas, curiosity, and creative chaos. Always active and full of unexpected thoughts, he turns ideas into engaging blogs and articles, making him the most suitable person for this role.",
+      },
+      {
+        name: "Pooja Priyadarshini",
+        role: "HR Head",
+        image: "assets/pooja-no-lettering.png",
+        about: "Soft-spoken, sharp-minded... and suddenly very loud about F1.\nSweet, smart, and a perfectionist at heart.\nBrains, beauty, and speed talk combined.",
+      },
     ];
 
     function IEEEEMBSLogo({ className, style }) {
@@ -45,23 +95,32 @@
       );
     }
 
-    function Avatar({ name, className }) {
+    function Avatar({ name, image, className }) {
       const initials = name.split(" ").map(n => n[0]).join("");
       return (
         <div
-          className={`${className} rounded-full flex items-center justify-center`}
+          className={`${className} rounded-full flex items-center justify-center overflow-hidden`}
           style={{
             background: "linear-gradient(145deg, #050505 0%, #10171a 55%, #160812 100%)",
             border: "2px solid rgba(69, 190, 214, 0.65)",
             boxShadow: "0 0 22px rgba(216, 88, 151, 0.28)",
           }}
         >
-          <span className="font-mono text-sm" style={{ color: "#45bed6" }}>{initials}</span>
+          {image ? (
+            <img
+              src={image}
+              alt={`${name} photo`}
+              className="w-full h-full"
+              style={{ objectFit: "cover", objectPosition: "center top" }}
+            />
+          ) : (
+            <span className="font-mono text-sm" style={{ color: "#45bed6" }}>{initials}</span>
+          )}
         </div>
       );
     }
 
-    function LiquidMetalIDCard({ name = "Name", role = "Role" }) {
+    function LiquidMetalIDCard({ name = "Name", role = "Role", image, about = "A dedicated member of the IEEE EMBS board." }) {
       const cardRef = useRef(null);
       const [isHovered, setIsHovered] = useState(false);
       const [isFlipped, setIsFlipped] = useState(false);
@@ -151,31 +210,40 @@
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={handleMouseLeave}
             onClick={handleClick}
-            animate={{
-              scale: isFlipped ? [1, 1.05, 1] : 1,
-            }}
             style={{
               rotateX: isFlipped ? 0 : rotateX,
-              rotateY: isFlipped ? 180 : rotateY,
+              rotateY: isFlipped ? 0 : rotateY,
               transformStyle: "preserve-3d",
+              WebkitTransformStyle: "preserve-3d",
               width: "min(440px, calc(100vw - 48px))",
               height: "272px",
-            }}
-            transition={{
-              rotateY: { duration: 0.8, ease: [0.4, 0, 0.2, 1] },
-              scale: { duration: 0.8, ease: [0.4, 0, 0.2, 1], times: [0, 0.5, 1] },
             }}
             className="relative cursor-pointer"
           >
             <motion.div
-              className="absolute inset-0 rounded-2xl overflow-hidden"
-              style={{ backfaceVisibility: "hidden" }}
+              className="absolute inset-0"
               animate={{
-                opacity: isFlipped ? 0 : 1,
-                filter: isFlipped ? "blur(8px)" : "blur(0px)",
+                rotateY: isFlipped ? 180 : 0,
+                scale: isFlipped ? [1, 1.05, 1] : 1,
               }}
-              transition={{ duration: 0.4, ease: "easeInOut" }}
+              transition={{
+                rotateY: { duration: 0.8, ease: [0.4, 0, 0.2, 1] },
+                scale: { duration: 0.8, ease: [0.4, 0, 0.2, 1], times: [0, 0.5, 1] },
+              }}
+              style={{
+                transformStyle: "preserve-3d",
+                WebkitTransformStyle: "preserve-3d",
+                willChange: "transform",
+              }}
             >
+              <motion.div
+                className="absolute inset-0 rounded-2xl overflow-hidden"
+                style={{
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
+                  transform: "rotateY(0deg)",
+                }}
+              >
               <div
                 className="absolute inset-0"
                 style={{
@@ -276,7 +344,7 @@
                         borderRadius: "9999px",
                       }}
                     />
-                    <Avatar name={name} className="relative w-28 h-28" />
+                    <Avatar name={name} image={image} className="relative w-28 h-28" />
                   </div>
 
                   <div className="min-w-0">
@@ -324,20 +392,16 @@
                   Click to flip
                 </span>
               </motion.div>
-            </motion.div>
+              </motion.div>
 
-            <motion.div
-              className="absolute inset-0 rounded-2xl overflow-hidden"
-              style={{
-                backfaceVisibility: "hidden",
-                transform: "rotateY(180deg)",
-              }}
-              animate={{
-                opacity: isFlipped ? 1 : 0,
-                filter: isFlipped ? "blur(0px)" : "blur(8px)",
-              }}
-              transition={{ duration: 0.4, ease: "easeInOut" }}
-            >
+              <motion.div
+                className="absolute inset-0 rounded-2xl overflow-hidden"
+                style={{
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
+                  transform: "rotateY(180deg)",
+                }}
+              >
               <div
                 className="absolute inset-0"
                 style={{
@@ -394,8 +458,17 @@
                     <h3 className="uppercase" style={{ color: "#45bed6", fontSize: "10px", fontFamily: "monospace", letterSpacing: "0.2em" }}>
                       About
                     </h3>
-                    <p className="text-sm leading-relaxed" style={{ color: "#c9dce1" }}>
-                      A dedicated member of the IEEE EMBS board, contributing to the chapter's work in biomedical engineering, healthcare technology, research, and student-led innovation.
+                    <p
+                      className="text-xs leading-relaxed"
+                      style={{
+                        color: "#c9dce1",
+                        maxHeight: "92px",
+                        overflowY: "auto",
+                        paddingRight: "4px",
+                        whiteSpace: "pre-line",
+                      }}
+                    >
+                      {about}
                     </p>
                   </div>
                 </div>
@@ -418,6 +491,7 @@
                   </span>
                 </motion.div>
               </div>
+              </motion.div>
             </motion.div>
           </motion.div>
         </div>
@@ -457,7 +531,7 @@
             }}
           >
             {boardMembers.map((member, index) => (
-              <LiquidMetalIDCard key={index} name={member.name} role={member.role} />
+              <LiquidMetalIDCard key={index} name={member.name} role={member.role} image={member.image} about={member.about} />
             ))}
           </div>
         </main>
